@@ -1,0 +1,39 @@
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+        <title>Kansal Map</title>
+
+    </head>
+    <body>
+        <div class="container">
+            <div class = "options-box">
+
+                <h1>Kansal Map</h1>                 <br><br>
+<div>                     <input type="submit" value="Hide List" id="hide-
+listings" data-bind='click: hide'>                     <input type="submit"
+value ="Show List" id="show-listings" data-bind='click: show'>
+</div>                 <br><br><br>                 <div>
+<hr><h2>List of My restaurants:</h2>                     <input type="search"
+data-bind =  'value : search , valueUpdate : "keyup"'>
+<div class="List" style="overflow-y: scroll; height:250px;"  >
+<ul data-bind='foreach: listall'>                             <li data-
+bind='text: $data , click: showMarker'></li>                         </ul>
+</div>                 </div>             </div>
+
+
+            <div id = "map">
+
+            </div>
+
+        </div>
+        <footer>
+            <script src="js/libs/knockout-3.2.0.js"></script>
+            <script src="js/app.js"></script>
+            <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBPGwbszSZ0gJ31nG5UjS0rpy4jxpbT_14&v=3&callback=initMap" onerror = "ErrorMethod()">
+            </script>
+        </footer>
+    </body>
+
+</html>
