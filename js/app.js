@@ -43,7 +43,16 @@ function initMap(){
     fetchRestaurantDetails();
 }
 
-
+function show(){
+    for (var i = 0; i < markers.length; i++) {
+        markers[i].setVisible(true);
+    }
+}
+function hide(){
+   for (var i = 0; i < markers.length; i++) {
+        markers[i].setVisible(false);
+    }
+}
 
 function showInfo(marker, info){
     var main_res = "";
@@ -57,25 +66,11 @@ function showInfo(marker, info){
     info.marker = marker;
     info.marker.setAnimation( google.maps.Animation.BOUNCE );
     info.setContent(main_res);
-
-
     info.open( map , marker );
-
     info.addListener('closeclick' , function() {
         info.marker.setAnimation( null );
     });
 
-}
-
-function show(){
-    for (var i = 0; i < markers.length; i++) {
-        markers[i].setVisible(true);
-    }
-}
-function hide(){
-   for (var i = 0; i < markers.length; i++) {
-        markers[i].setVisible(false);
-    }
 }
 
 function fetchRestaurantDetails() {
@@ -115,6 +110,7 @@ function zomato(id, j) {
         markers.push(marker);
 
     }).fail(function(response,status, error){
+        //console.log(error)
         ViewModel.error("Zomato not working");// zomato erroe
         ViewModel.mapError(true);//nmap error
 
@@ -122,15 +118,17 @@ function zomato(id, j) {
 }
 
 function ErrorMethod() {
-    ViewModel.error( 'Unable to load the map' );
-    ViewModel.mapError( true );
+    ViewModel.error( 'Unable to load the map' );//displaying error 
+    ViewModel.mapError( true );// set mapError to true
 }
 
 function showMarker( markerTitle ) {
+    //for all markers
     for( var i in markers )
     {
         if( markers[ i ].title == markerTitle )
         {
+            //display marker 
             showInfo( markers[ i ] , info );
             return;
         }
@@ -138,19 +136,16 @@ function showMarker( markerTitle ) {
 }
 
 var ViewModel = {
-
+    error : ko.observable(''),
     mapError : ko.observable( false ),
     listall : ko.observableArray(),
     search : ko.observable(''),
 
-    error : ko.observable(''),
-
     init : function() {
         for( var marker in markers )
         {
-
+            //pushing restaurants in list
            ViewModel.listall.push( markers[marker].title );
-
         }
     },
 
@@ -161,7 +156,6 @@ var ViewModel = {
         {
             if( markers[ i ].title.toLowerCase().indexOf( text.toLowerCase() ) >= 0 )
             {
-
                 markers[ i ].setVisible(true);
                 //console.log("hry");
                  ViewModel.listall.push(markers[ i ].title);
