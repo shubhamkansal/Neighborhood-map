@@ -4,19 +4,19 @@ var markers = [];
 
 var Restaurants= [
     {
-        name: 'The Indian coffee house',
+        name: 'The Indian Coffee House',
         res_id : 120535 // Zomato res_id
     },
     {
-        name: 'The Girl in the cafe',
+        name: 'Girl In The Cafe',
         res_id : 120344 // Zomato res_id
     },
     {
-        name: 'Books and Brew',
+        name: 'Books N Brew',
         res_id : 120554 // Zomato res_id
     },
     {
-        name: 'Mid point Cafe',
+        name: 'Midpoint Cafe',
         res_id : 122301 // Zomato res_id
     },
     {
@@ -24,7 +24,7 @@ var Restaurants= [
         res_id : 120280 // Zomato res_id
     },
     {
-        name: 'Dominos Pizza',
+        name: 'Domino\'s Pizza',
         res_id : 120097 // Zomato res_id
     },
 
@@ -39,62 +39,75 @@ function initMap(){
         },
         zoom: 13
     });
+    //opening of info window
     info = new google.maps.InfoWindow({maxwidth: 80});
     fetchRestaurantDetails();
 }
 
-function show(){
-    for (var i = 0; i < markers.length; i++) {
-        markers[i].setVisible(true);
-    }
-}
-function hide(){
-   for (var i = 0; i < markers.length; i++) {
-        markers[i].setVisible(false);
-    }
-}
+
 
 function showInfo(marker, info){
+    // main_res contains the content of info window
     var main_res = "";
-    main_res = "<h2>"+marker.res.name+"</h2><hr>";
-    main_res += "<h3>Cuisines:</h3>"+marker.res.cuisines+"<br>";
-    main_res += "<h3>Rating:</h3>"+marker.res.user_rating.aggregate_rating+"<br>";
+    main_res = "<h2>"+marker.res.name+"</h2><hr>";//title of restaurant
+    main_res += "<h3>Cuisines:</h3>"+marker.res.cuisines+"<br>";//cuisines
+    main_res += "<h3>Rating:</h3>"+marker.res.user_rating.aggregate_rating+"<br>";//rating
      if( info.marker !== marker && info.marker !== undefined )
     {
         info.marker.setAnimation( null );
     }
     info.marker = marker;
+    //make the marker bounce on clicking it
     info.marker.setAnimation( google.maps.Animation.BOUNCE );
     info.setContent(main_res);
+
+    //opening map
     info.open( map , marker );
+
     info.addListener('closeclick' , function() {
         info.marker.setAnimation( null );
     });
 
 }
 
+function show(){
+    //showing all the markers
+    for (var i = 0; i < markers.length; i++) {
+        markers[i].setVisible(true);
+    }
+}
+function hide(){
+    //hiding markers
+   for (var i = 0; i < markers.length; i++) {
+        markers[i].setVisible(false);
+    }
+}
+
 function fetchRestaurantDetails() {
-    var j = 0;
+    //finding content of each info window using zomato
     for( var i in Restaurants ) {
         zomato( Restaurants[ i ].res_id , j);
-        j++;
     }
+    //invoking init function
+    ViewModel.init();
 }
 
 function zomato(id, j) {
     $.ajax({
-        url : 'https://developers.zomato.com/api/v2.1/restaurant',
+        url : 'https://developers.zomato.com/api/v2.1/restaurant',//url for zomato
         headers: {
             'Accept' : 'application/json',
-            'user-key' : '53f10e93683d449bf7bc8decae82c681'
+            'user-key' : '53f10e93683d449bf7bc8decae82c681'//api key of zomato
         },
-        data: 'res_id='+id,
+        data: 'res_id='+id,//rest_id is used to find content
         async: true,
     }).done(function(response){
         //console.log(response);
         var currres='';
         currres = response.location;
+        //making long and lat combined 
         var latlng = new google.maps.LatLng(parseFloat(currres.latitude),parseFloat(currres.longitude));
+        //calculating marker attributes
         var marker = new google.maps.Marker({
             position: latlng,
             title: response.name,
@@ -102,15 +115,13 @@ function zomato(id, j) {
             res: response
 
         });
+        //on clicking marker
         marker.addListener('click', function(){
             showInfo(this, info);
         });
-
-        ViewModel.init();
         markers.push(marker);
 
     }).fail(function(response,status, error){
-        //console.log(error)
         ViewModel.error("Zomato not working");// zomato erroe
         ViewModel.mapError(true);//nmap error
 
@@ -118,17 +129,16 @@ function zomato(id, j) {
 }
 
 function ErrorMethod() {
-    ViewModel.error( 'Unable to load the map' );//displaying error 
-    ViewModel.mapError( true );// set mapError to true
+    ViewModel.error( 'Unable to load the map' );//error
+    ViewModel.mapError( true );//setting mapError to true
 }
 
 function showMarker( markerTitle ) {
-    //for all markers
     for( var i in markers )
     {
+        //matching title with the marker title
         if( markers[ i ].title == markerTitle )
         {
-            //display marker 
             showInfo( markers[ i ] , info );
             return;
         }
@@ -136,37 +146,37 @@ function showMarker( markerTitle ) {
 }
 
 var ViewModel = {
+    
     error : ko.observable(''),
     mapError : ko.observable( false ),
-    listall : ko.observableArray(),
+    listall : ko.observableArray([]),//list of all restaurants
     search : ko.observable(''),
-
+    // init function 
     init : function() {
-        for( var marker in markers )
+        for( var marker in Restaurants )
         {
-            //pushing restaurants in list
-           ViewModel.listall.push( markers[marker].title );
+           //putting each title in the list
+           ViewModel.listall.push( Restaurants[marker].name );
         }
     },
 
      find : function(text){
         //console.log("yoo");
         ViewModel.listall.removeAll();
-        for( var i in markers )
-        {
-            if( markers[ i ].title.toLowerCase().indexOf( text.toLowerCase() ) >= 0 )
-            {
+        for( var i in markers ) {
+            //console.log("hello");
+            if( markers[ i ].title.toLowerCase().indexOf( text.toLowerCase() ) >= 0 ) {
                 markers[ i ].setVisible(true);
                 //console.log("hry");
                  ViewModel.listall.push(markers[ i ].title);
             }
-            else
-            {
+            else {
+                //console.log("in else block");
                 markers[ i ].setVisible(false);
             }
         }
     }
 
 }
-ko.applyBindings(ViewModel);
-ViewModel.search.subscribe( ViewModel.find );
+ko.applyBindings(ViewModel);//binding ViewModel to the html file
+ViewModel.search.subscribe( ViewModel.find );//calling find function
