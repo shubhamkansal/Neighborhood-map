@@ -12,6 +12,7 @@
         <div class = "options">
             <h1>Kansal Map</h1> 
             <br><br>
+            <div data-bind="text: error, visible: mapError"></div>
             <div>
                 <input type="submit" value="Hide List" id="hide-listings" data-bind='click: hide'>
                 <input type="submit" value ="Show List" id="show-listings" data-bind='click: show'>
