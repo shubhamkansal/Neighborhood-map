@@ -4,23 +4,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/bootstrap.css">
     <title>Kansal Map</title>
 </head>
     
 <body>
     <div class="container">
         <div class = "options">
-            <h1>Kansal Map</h1> 
-            <br><br>
+            <h4>Kansal Map</h4> 
             <div data-bind="text: error, visible: mapError"></div>
             <div>
                 <input type="submit" value="Hide List" id="hide-listings" data-bind='click: hide'>
                 <input type="submit" value ="Show List" id="show-listings" data-bind='click: show'>
             </div>
-            <br><br><br>
             <div>
-                <hr>
-                <h2>List of My restaurants:</h2>
+                <h5>List of My restaurants:</h5>
                 <input type="search" data-bind =  'value : search , valueUpdate : "keyup"'>
                 <div class="List" style="overflow-y: scroll; height:250px;"  >
                     <ul data-bind='foreach: listall'>
