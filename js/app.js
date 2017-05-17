@@ -86,13 +86,13 @@ function hide(){
 function fetchRestaurantDetails() {
     //finding content of each info window using zomato
     for( var i in Restaurants ) {
-        zomato( Restaurants[ i ].res_id , j);
+        zomato(Restaurants[ i ].res_id);
     }
     //invoking init function
     ViewModel.init();
 }
 
-function zomato(id, j) {
+function zomato(id) {
     $.ajax({
         url : 'https://developers.zomato.com/api/v2.1/restaurant',//url for zomato
         headers: {
